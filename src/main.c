@@ -5,15 +5,15 @@
 
 const int WIDTH=800;
 const int HEIGHT=600;
-const int PLAYER_SPEED=800;
+const int PLAYER_SPEED=600;
 const int BALLSIZE=15;
 const int PLAYER_X = 20;
 
 const int PLAYER_WIDTH = 20;
 const int PLAYER_HEIGHT = 120;
 
-const int MIN_BALL_SPEED = 200;
-const int MAX_BALL_SPEED = 500;
+const int MIN_BALL_SPEED = 300;
+const int MAX_BALL_SPEED = 600;
 
 typedef struct {
 	int y;
