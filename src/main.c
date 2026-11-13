@@ -5,15 +5,15 @@
 
 const int WIDTH=800;
 const int HEIGHT=600;
-const int PLAYER_SPEED=10;
+const int PLAYER_SPEED=800;
 const int BALLSIZE=15;
 const int PLAYER_X = 20;
 
 const int PLAYER_WIDTH = 20;
 const int PLAYER_HEIGHT = 120;
 
-const int MIN_BALL_SPEED = 4;
-const int MAX_BALL_SPEED = 8;
+const int MIN_BALL_SPEED = 200;
+const int MAX_BALL_SPEED = 500;
 
 typedef struct {
 	int y;
@@ -77,22 +77,25 @@ int main()
 	Player p2 = newPlayer();
 
 	Ball ball;
-	ball.velX = 2;
-	ball.velY = 1;
+	ball.velX = 200;
+	ball.velY = 100;
 	ball.x = (WIDTH/2)-BALLSIZE;
 	ball.y = (HEIGHT/2)-BALLSIZE;
+
+	struct mfb_timer* clock = mfb_timer_create();
+	double dt = 0.0;
 
 	mfb_update_state state;
 	do {
 		// Game update
-		if (keys[MFB_KB_KEY_W]) p1.y -= PLAYER_SPEED;
-		if (keys[MFB_KB_KEY_S]) p1.y += PLAYER_SPEED;
+		if (keys[MFB_KB_KEY_W]) p1.y -= PLAYER_SPEED * dt;
+		if (keys[MFB_KB_KEY_S]) p1.y += PLAYER_SPEED * dt;
 
-		if (keys[MFB_KB_KEY_UP]) p2.y -= PLAYER_SPEED;
-		if (keys[MFB_KB_KEY_DOWN]) p2.y += PLAYER_SPEED;
+		if (keys[MFB_KB_KEY_UP]) p2.y -= PLAYER_SPEED * dt;
+		if (keys[MFB_KB_KEY_DOWN]) p2.y += (PLAYER_SPEED * dt);
 
-		ball.x += ball.velX;
-		ball.y += ball.velY;
+		ball.x += ball.velX * dt;
+		ball.y += ball.velY * dt;
 
 		// ball coll
 		if ((ball.x+BALLSIZE) > (WIDTH-PLAYER_X-PLAYER_WIDTH))
@@ -105,6 +108,9 @@ int main()
 			else {
 				ball.x = (WIDTH/2)-BALLSIZE;
 				ball.y = (HEIGHT/2)-BALLSIZE;
+
+				ball.velX = -200;
+				ball.velY = -100;
 
 				p1.score++;
 			}
@@ -119,6 +125,9 @@ int main()
 			else {
 				ball.x = (WIDTH/2)-BALLSIZE;
 				ball.y = (HEIGHT/2)-BALLSIZE;
+
+				ball.velX = 200;
+				ball.velY = 100;
 
 				p2.score++;
 			}
@@ -152,9 +161,13 @@ int main()
 		if (state != MFB_STATE_OK)
 			break;
 
+		dt = mfb_timer_delta(clock);
+		mfb_timer_reset(clock);
+
 	} while(mfb_wait_sync(window));
 
 	free(buffer);
+	mfb_timer_destroy(clock);
 	buffer = NULL;
 	window = NULL;
 
